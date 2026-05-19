@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClientOS Pro · Instagram Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-dim: rgba(201,168,76,0.18);
+    --gold-border: rgba(201,168,76,0.35);
+    --bg: #080808;
+    --surface: #0f0f0f;
+    --surface2: #141414;
+    --surface3: #1a1a1a;
+    --white: #F5F0E8;
+    --white-dim: rgba(245,240,232,0.55);
+    --white-faint: rgba(245,240,232,0.15);
+    --red: #E05252;
+    --green: #52C97A;
+    --amber: #E0A040;
+    --blue: #5294E0;
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  body {
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    padding: 2rem 1rem 3rem;
+    font-family: var(--font-body);
+    min-height: 100vh;
+  }
+
+  .page-label {
+    font-family: var(--font-display);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+  }
+
+  /* ── PHONE ── */
+  .phone {
+    width: 340px;
+    height: 604px;
+    background: var(--bg);
+    border-radius: 42px;
+    border: 1.5px solid #2a2a2a;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 0.5px #000,
+      0 40px 80px rgba(0,0,0,0.8),
+      0 0 60px rgba(201,168,76,0.04);
+  }
+
+  /* Notch */
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 10px; left: 50%; transform: translateX(-50%);
+    width: 90px; height: 26px;
+    background: #0a0a0a;
+    border-radius: 14px;
+    z-index: 100;
+    border: 1px solid #1a1a1a;
+  }
+
+  /* ── SLIDES ── */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 52px 24px 40px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0s;
+  }
+  .slide.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ── SLIDE 1: HOOK ── */
+  .s1 { background: var(--bg); overflow: hidden; }
+  .s1-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 60%, rgba(201,168,76,0.07) 0%, transparent 70%);
+  }
+  .s1-grid {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: linear-gradient(var(--gold) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .s1-eyebrow {
+    font-family: var(--font-display);
+    font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 18px; z-index: 1;
+    opacity: 0; transform: translateY(12px);
+    animation: fadeUp 0.5s 0.1s forwards;
+  }
+  .s1-hook {
+    font-family: var(--font-display);
+    font-size: 38px; font-weight: 800;
+    color: var(--white); line-height: 1.05;
+    text-align: center; z-index: 1;
+    opacity: 0; transform: translateY(16px);
+    animation: fadeUp 0.55s 0.25s forwards;
+  }
+  .s1-hook em { color: var(--gold); font-style: normal; }
+  .s1-sub {
+    font-size: 12.5px; font-weight: 300; color: var(--white-dim);
+    text-align: center; line-height: 1.65; margin-top: 14px; z-index: 1;
+    opacity: 0; transform: translateY(12px);
+    animation: fadeUp 0.5s 0.45s forwards;
+    max-width: 270px;
+  }
+  .s1-divider {
+    width: 40px; height: 1px; background: var(--gold); margin: 18px auto;
+    z-index: 1; opacity: 0;
+    animation: fadeIn 0.4s 0.6s forwards;
+  }
+  .s1-pills {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    z-index: 1; opacity: 0;
+    animation: fadeUp 0.5s 0.7s forwards;
+  }
+  .pill {
+    background: var(--gold-dim); border: 0.5px solid var(--gold-border);
+    color: var(--gold-light); font-size: 9.5px; font-weight: 500;
+    border-radius: 100px; padding: 5px 12px; letter-spacing: 0.3px;
+  }
+  .s1-bottom {
+    position: absolute; bottom: 30px; left: 0; right: 0;
+    display: flex; justify-content: center;
+    z-index: 1; opacity: 0;
+    animation: fadeIn 0.5s 0.9s forwards;
+  }
+  .s1-stat-row {
+    display: flex; gap: 24px;
+  }
+  .s1-stat { text-align: center; }
+  .s1-stat .sv { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--gold); }
+  .s1-stat .sl { font-size: 9px; color: var(--white-dim); margin-top: 2px; letter-spacing: 0.5px; }
+  .s1-stat-sep { width: 0.5px; background: var(--white-faint); }
+
+  /* ── SLIDE 2: PROBLEM ── */
+  .s2 { background: var(--bg); overflow: hidden; justify-content: flex-start; padding-top: 60px; }
+  .s2-noise {
+    position: absolute; inset: 0; opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .s2-label {
+    font-family: var(--font-display); font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--red); margin-bottom: 14px; z-index: 1;
+    opacity: 0; animation: fadeUp 0.4s 0.1s forwards;
+  }
+  .s2-title {
+    font-family: var(--font-display); font-size: 24px; font-weight: 700;
+    color: var(--white); text-align: center; line-height: 1.2;
+    margin-bottom: 22px; z-index: 1;
+    opacity: 0; animation: fadeUp 0.45s 0.2s forwards;
+  }
+  .pain-list { width: 100%; z-index: 1; display: flex; flex-direction: column; gap: 9px; }
+  .pain-item {
+    background: rgba(224,82,82,0.06); border: 0.5px solid rgba(224,82,82,0.2);
+    border-radius: 10px; padding: 11px 14px;
+    display: flex; align-items: center; gap: 10px;
+    opacity: 0; transform: translateX(-20px);
+  }
+  .pain-item:nth-child(1) { animation: slideIn 0.4s 0.35s forwards; }
+  .pain-item:nth-child(2) { animation: slideIn 0.4s 0.5s forwards; }
+  .pain-item:nth-child(3) { animation: slideIn 0.4s 0.65s forwards; }
+  .pain-item:nth-child(4) { animation: slideIn 0.4s 0.8s forwards; }
+  .pain-icon { font-size: 16px; flex-shrink: 0; }
+  .pain-text { font-size: 11.5px; color: rgba(245,240,232,0.8); line-height: 1.4; }
+  .pain-text strong { color: var(--white); font-weight: 500; }
+  .s2-bottom {
+    margin-top: 18px; z-index: 1; text-align: center;
+    opacity: 0; animation: fadeUp 0.4s 1s forwards;
+  }
+  .s2-bottom p { font-size: 11px; color: var(--white-dim); font-style: italic; }
+
+  /* ── SLIDE 3: DASHBOARD ── */
+  .s3 { background: var(--bg); overflow: hidden; justify-content: flex-start; padding-top: 56px; padding-bottom: 0; }
+  .s3-label {
+    font-family: var(--font-display); font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 12px; z-index: 1;
+    opacity: 0; animation: fadeUp 0.4s 0.1s forwards;
+  }
+  .s3-title {
+    font-family: var(--font-display); font-size: 18px; font-weight: 700;
+    color: var(--white); margin-bottom: 14px; z-index: 1; text-align: center;
+    opacity: 0; animation: fadeUp 0.4s 0.2s forwards;
+  }
+
+  /* Dashboard mockup */
+  .dash-card {
+    width: 100%; background: var(--surface); border: 0.5px solid #222;
+    border-radius: 14px; padding: 14px; z-index: 1;
+    opacity: 0; animation: fadeUp 0.45s 0.3s forwards;
+  }
+  .dash-header-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .dash-header-title { font-family: var(--font-display); font-size: 9px; letter-spacing: 2px; color: var(--white-dim); text-transform: uppercase; }
+  .live-dot {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 8.5px; color: var(--green);
+  }
+  .live-dot::before {
+    content: ''; width: 6px; height: 6px; background: var(--green);
+    border-radius: 50%; animation: blink 1.2s infinite;
+  }
+  .metric-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 10px; }
+  .m-box {
+    background: var(--surface2); border: 0.5px solid #1e1e1e;
+    border-radius: 8px; padding: 9px 10px;
+  }
+  .m-box .ml { font-size: 8.5px; color: rgba(245,240,232,0.35); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+  .m-box .mv { font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+  .m-box .ms { font-size: 8px; color: rgba(245,240,232,0.25); margin-top: 1px; }
+  .mv.gold { color: var(--gold); }
+  .mv.green { color: var(--green); }
+  .mv.amber { color: var(--amber); }
+  .mv.red { color: var(--red); }
+
+  /* Mini bars */
+  .bar-section { margin-top: 2px; }
+  .bar-head { font-size: 8.5px; color: rgba(245,240,232,0.3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; }
+  .bar-row { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; }
+  .bar-name { font-size: 8.5px; color: rgba(245,240,232,0.45); width: 60px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 2px; }
+  .bar-val { font-size: 8.5px; color: rgba(245,240,232,0.45); width: 38px; text-align: right; }
+
+  /* Action items */
+  .action-mini { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+  .a-row {
+    background: var(--surface2); border: 0.5px solid #1e1e1e;
+    border-radius: 7px; padding: 7px 9px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .a-name { font-size: 9.5px; color: var(--white); font-weight: 500; }
+  .a-desc { font-size: 8px; color: rgba(245,240,232,0.3); margin-top: 1px; }
+  .a-badge { font-size: 8px; font-weight: 600; border-radius: 5px; padding: 2px 7px; }
+  .a-badge.r { background: rgba(224,82,82,0.15); color: var(--red); }
+  .a-badge.a { background: rgba(224,160,64,0.15); color: var(--amber); }
+  .a-badge.g { background: rgba(82,201,122,0.15); color: var(--green); }
+
+  /* ── SLIDE 4: FEATURES ── */
+  .s4 { background: var(--bg); overflow: hidden; justify-content: flex-start; padding-top: 58px; }
+  .s4-label {
+    font-family: var(--font-display); font-size: 9px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 12px; z-index: 1;
+    opacity: 0; animation: fadeUp 0.4s 0.1s forwards;
+  }
+  .s4-title {
+    font-family: var(--font-display); font-size: 22px; font-weight: 800;
+    color: var(--white); text-align: center; line-height: 1.15;
+    margin-bottom: 6px; z-index: 1;
+    opacity: 0; animation: fadeUp 0.4s 0.2s forwards;
+  }
+  .s4-title em { color: var(--gold); font-style: normal; }
+  .s4-sub {
+    font-size: 11px; color: var(--white-dim); text-align: center;
+    margin-bottom: 20px; z-index: 1;
+    opacity: 0; animation: fadeUp 0.4s 0.3s forwards;
+  }
+  .feat-grid { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; z-index: 1; }
+  .feat-card {
+    background: var(--surface); border: 0.5px solid #1f1f1f;
+    border-radius: 12px; padding: 13px 12px;
+    opacity: 0; transform: translateY(12px);
+  }
+  .feat-card:nth-child(1) { animation: fadeUp 0.4s 0.4s forwards; }
+  .feat-card:nth-child(2) { animation: fadeUp 0.4s 0.5s forwards; }
+  .feat-card:nth-child(3) { animation: fadeUp 0.4s 0.6s forwards; }
+  .feat-card:nth-child(4) { animation: fadeUp 0.4s 0.7s forwards; }
+  .feat-card:nth-child(5) { animation: fadeUp 0.4s 0.8s forwards; }
+  .feat-card:nth-child(6) { animation: fadeUp 0.4s 0.9s forwards; }
+  .feat-icon { font-size: 18px; margin-bottom: 6px; }
+  .feat-name { font-family: var(--font-display); font-size: 10.5px; font-weight: 700; color: var(--white); margin-bottom: 3px; }
+  .feat-desc { font-size: 9px; color: var(--white-dim); line-height: 1.45; }
+
+  .s4-vs {
+    margin-top: 14px; z-index: 1; width: 100%;
+    background: var(--gold-dim); border: 0.5px solid var(--gold-border);
+    border-radius: 10px; padding: 9px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    opacity: 0; animation: fadeUp 0.4s 1s forwards;
+  }
+  .vs-item { text-align: center; }
+  .vs-name { font-size: 9px; color: var(--white-dim); margin-bottom: 2px; }
+  .vs-val { font-family: var(--font-display); font-size: 13px; font-weight: 700; }
+  .vs-val.red { color: var(--red); }
+  .vs-val.green { color: var(--green); }
+  .vs-sep { font-size: 14px; color: var(--white-faint); }
+
+  /* ── SLIDE 5: CTA ── */
+  .s5 { background: var(--bg); overflow: hidden; }
+  .s5-glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 50% at 50% 80%, rgba(201,168,76,0.1) 0%, transparent 65%);
+  }
+  .s5-grid {
+    position: absolute; inset: 0; opacity: 0.03;
+    background-image: linear-gradient(var(--gold) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+  .s5-badge {
+    background: var(--gold-dim); border: 0.5px solid var(--gold-border);
+    color: var(--gold); font-size: 9.5px; font-weight: 500;
+    border-radius: 100px; padding: 5px 14px; letter-spacing: 0.5px;
+    z-index: 1; margin-bottom: 20px;
+    opacity: 0; animation: fadeIn 0.4s 0.1s forwards;
+  }
+  .s5-title {
+    font-family: var(--font-display); font-size: 32px; font-weight: 800;
+    color: var(--white); text-align: center; line-height: 1.08;
+    z-index: 1; margin-bottom: 12px;
+    opacity: 0; animation: fadeUp 0.5s 0.25s forwards;
+  }
+  .s5-title em { color: var(--gold); font-style: normal; }
+  .s5-sub {
+    font-size: 12px; font-weight: 300; color: var(--white-dim);
+    text-align: center; line-height: 1.65; z-index: 1; margin-bottom: 26px;
+    opacity: 0; animation: fadeUp 0.45s 0.45s forwards;
+    max-width: 270px;
+  }
+  .s5-price-row {
+    display: flex; align-items: center; gap: 10px; z-index: 1; margin-bottom: 20px;
+    opacity: 0; animation: fadeUp 0.4s 0.6s forwards;
+  }
+  .s5-old { font-family: var(--font-display); font-size: 16px; color: var(--white-dim); text-decoration: line-through; }
+  .s5-price { font-family: var(--font-display); font-size: 36px; font-weight: 800; color: var(--gold); }
+  .s5-once { font-size: 10px; color: var(--white-dim); align-self: flex-end; padding-bottom: 6px; }
+  .s5-cta {
+    background: var(--gold); color: var(--bg);
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    border: none; border-radius: 100px; padding: 12px 32px;
+    cursor: pointer; letter-spacing: 0.5px; z-index: 1;
+    opacity: 0; animation: fadeUp 0.4s 0.75s forwards;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 32px rgba(201,168,76,0.3);
+  }
+  .s5-cta:hover { transform: scale(1.03); box-shadow: 0 12px 40px rgba(201,168,76,0.45); }
+  .s5-link {
+    margin-top: 10px; font-size: 10px; color: var(--white-dim); z-index: 1;
+    opacity: 0; animation: fadeIn 0.4s 0.95s forwards;
+  }
+  .s5-link span { color: var(--gold); }
+
+  /* ── PROGRESS BAR ── */
+  .prog-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: rgba(255,255,255,0.06); z-index: 50;
+  }
+  .prog-fill {
+    height: 100%; background: var(--gold); width: 0%;
+    transition: width linear;
+  }
+
+  /* ── SLIDE COUNTER ── */
+  .slide-count {
+    position: absolute; top: 56px; right: 18px; z-index: 50;
+    font-family: var(--font-display); font-size: 9px; letter-spacing: 1px;
+    color: rgba(255,255,255,0.2);
+  }
+
+  /* ── CONTROLS ── */
+  .controls {
+    display: flex; gap: 10px; align-items: center;
+  }
+  .btn {
+    background: #1a1a1a; border: 0.5px solid #2a2a2a;
+    border-radius: 8px; padding: 9px 20px; font-size: 12px;
+    color: #aaa; cursor: pointer; font-family: var(--font-body);
+    transition: background 0.15s, color 0.15s;
+  }
+  .btn:hover { background: #222; color: #eee; }
+  .btn-play {
+    background: var(--gold); color: var(--bg); border: none;
+    border-radius: 8px; padding: 9px 22px; font-size: 12px;
+    font-weight: 600; cursor: pointer; font-family: var(--font-body);
+    transition: opacity 0.15s;
+  }
+  .btn-play:hover { opacity: 0.9; }
+
+  /* ── TIP ── */
+  .tip {
+    max-width: 340px;
+    background: #141414; border: 0.5px solid #252525;
+    border-radius: 12px; padding: 14px 18px;
+    font-size: 11.5px; color: #666; line-height: 1.6; text-align: center;
+  }
+  .tip strong { color: #999; font-weight: 500; }
+
+  /* ── KEYFRAMES ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes blink {
+    0%,100%{ opacity: 1; } 50%{ opacity: 0.3; }
+  }
+  @keyframes counterUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<span class="page-label">Instagram Reel · 9:16 · Screen Record This</span>
+
+<div class="phone" id="phone">
+
+  <!-- Slide counter -->
+  <div class="slide-count" id="slideCount">1 / 5</div>
+
+  <!-- Progress bar -->
+  <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+
+  <!-- ── SLIDE 1: HOOK ── -->
+  <div class="slide s1 visible" id="slide-0">
+    <div class="s1-bg"></div>
+    <div class="s1-grid"></div>
+    <div class="s1-eyebrow">Attention · Client Managers</div>
+    <div class="s1-hook">Your clients<br>deserve better<br>than <em>chaos</em></div>
+    <div class="s1-sub">Spreadsheets, sticky notes, forgotten follow-ups — there's a smarter way to run your client business.</div>
+    <div class="s1-divider"></div>
+    <div class="s1-pills">
+      <span class="pill">Freelancers</span>
+      <span class="pill">Consultants</span>
+      <span class="pill">Agencies</span>
+      <span class="pill">VAs</span>
+      <span class="pill">Coaches</span>
+    </div>
+    <div class="s1-bottom">
+      <div class="s1-stat-row">
+        <div class="s1-stat"><div class="sv">$83k</div><div class="sl">Pipeline tracked</div></div>
+        <div class="s1-stat-sep"></div>
+        <div class="s1-stat"><div class="sv">Zero</div><div class="sl">Subscriptions</div></div>
+        <div class="s1-stat-sep"></div>
+        <div class="s1-stat"><div class="sv">1 sheet</div><div class="sl">Does it all</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 2: PROBLEM ── -->
+  <div class="slide s2" id="slide-1">
+    <div class="s2-noise"></div>
+    <div class="s2-label">Sound familiar?</div>
+    <div class="s2-title">Managing clients<br>is breaking you</div>
+    <div class="pain-list">
+      <div class="pain-item">
+        <span class="pain-icon">💸</span>
+        <div class="pain-text"><strong>Invoices slip through</strong> — you forget to follow up and lose thousands</div>
+      </div>
+      <div class="pain-item">
+        <span class="pain-icon">👻</span>
+        <div class="pain-text"><strong>Clients go silent</strong> — you don't notice until it's too late</div>
+      </div>
+      <div class="pain-item">
+        <span class="pain-icon">🗂️</span>
+        <div class="pain-text"><strong>Data everywhere</strong> — email, notes, DMs, 6 different apps</div>
+      </div>
+      <div class="pain-item">
+        <span class="pain-icon">⏰</span>
+        <div class="pain-text"><strong>Tasks pile up</strong> — deadlines missed, reputation damaged</div>
+      </div>
+    </div>
+    <div class="s2-bottom">
+      <p>The tools that exist are too expensive or too complex.</p>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 3: DASHBOARD ── -->
+  <div class="slide s3" id="slide-2">
+    <div class="s3-label">The solution · ClientOS Pro</div>
+    <div class="s3-title">Your command center,<br>inside Google Sheets</div>
+    <div class="dash-card">
+      <div class="dash-header-row">
+        <span class="dash-header-title">Business Command Center</span>
+        <span class="live-dot">Live</span>
+      </div>
+      <div class="metric-row">
+        <div class="m-box"><div class="ml">Pipeline</div><div class="mv gold">$83k</div><div class="ms">open deals</div></div>
+        <div class="m-box"><div class="ml">Revenue MTD</div><div class="mv green">$19.2k</div><div class="ms">total paid</div></div>
+        <div class="m-box"><div class="ml">Outstanding</div><div class="mv amber">$32.7k</div><div class="ms">to collect</div></div>
+        <div class="m-box"><div class="ml">Active Clients</div><div class="mv" style="color:var(--white)">4</div><div class="ms">in progress</div></div>
+      </div>
+      <div class="bar-section">
+        <div class="bar-head">Revenue by client</div>
+        <div class="bar-row"><span class="bar-name">Stellar Media</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--gold)"></div></div><span class="bar-val">$8,000</span></div>
+        <div class="bar-row"><span class="bar-name">Pixel & Co</span><div class="bar-track"><div class="bar-fill" style="width:56%;background:#b8944a"></div></div><span class="bar-val">$4,500</span></div>
+        <div class="bar-row"><span class="bar-name">Bloom Agency</span><div class="bar-track"><div class="bar-fill" style="width:44%;background:#8a6c38"></div></div><span class="bar-val">$3,500</span></div>
+      </div>
+      <div class="action-mini">
+        <div class="a-row">
+          <div><div class="a-name">NovaTech Inc</div><div class="a-desc">INV-003 · $15,000 · 19 days late</div></div>
+          <span class="a-badge r">Chase now</span>
+        </div>
+        <div class="a-row">
+          <div><div class="a-name">Stellar Media</div><div class="a-desc">18 days silent · Health: 85</div></div>
+          <span class="a-badge a">Check in</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 4: FEATURES ── -->
+  <div class="slide s4" id="slide-3">
+    <div class="s4-label">Everything included</div>
+    <div class="s4-title">One system to<br>rule <em>all</em> your clients</div>
+    <div class="s4-sub">8 powerful sheets. All auto-updating.</div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-name">Dashboard</div>
+        <div class="feat-desc">Live overview of every number that matters</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🚨</div>
+        <div class="feat-name">Action Center</div>
+        <div class="feat-desc">Auto-flags overdue, at-risk & silent clients</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💰</div>
+        <div class="feat-name">Invoices</div>
+        <div class="feat-desc">Track sent, paid, overdue in seconds</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🎯</div>
+        <div class="feat-name">Pipeline</div>
+        <div class="feat-desc">Close deals faster with stage tracking</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📋</div>
+        <div class="feat-name">Tasks & Projects</div>
+        <div class="feat-desc">Never miss a deadline again</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📈</div>
+        <div class="feat-name">6 Live Charts</div>
+        <div class="feat-desc">Visual analytics that update instantly</div>
+      </div>
+    </div>
+    <div class="s4-vs">
+      <div class="vs-item"><div class="vs-name">Other tools</div><div class="vs-val red">$49–200/mo</div></div>
+      <div class="vs-sep">vs</div>
+      <div class="vs-item"><div class="vs-name">ClientOS Pro</div><div class="vs-val green">One-time only</div></div>
+    </div>
+  </div>
+
+  <!-- ── SLIDE 5: CTA ── -->
+  <div class="slide s5" id="slide-4">
+    <div class="s5-glow"></div>
+    <div class="s5-grid"></div>
+    <div class="s5-badge">⚡ No subscription. Ever.</div>
+    <div class="s5-title">Take control<br>of your client<br><em>business</em></div>
+    <div class="s5-sub">One Google Sheet replaces every scattered tool, sticky note, and missed follow-up.</div>
+    <div class="s5-price-row">
+      <span class="s5-old">$79</span>
+      <span class="s5-price">$39</span>
+      <span class="s5-once">one-time</span>
+    </div>
+    <button class="s5-cta">Get ClientOS Pro →</button>
+    <div class="s5-link">payhip.com/<span>SheetsByPrabh</span></div>
+  </div>
+
+</div><!-- /phone -->
+
+<div class="controls">
+  <button class="btn" onclick="prev()">← Prev</button>
+  <button class="btn-play" id="playBtn" onclick="togglePlay()">▶ Auto-play</button>
+  <button class="btn" onclick="next()">Next →</button>
+</div>
+
+<div class="tip">
+  <strong>How to record this as a Reel:</strong><br>
+  Open this file in Chrome at full zoom → Press F11 for fullscreen → Use your phone to record the screen, or use a screen recorder app (OBS / iPhone Screen Record). Export as 9:16 vertical video → Post directly to Instagram Reels.
+</div>
+
+<script>
+  let current = 0;
+  const total = 5;
+  let playing = false;
+  let timer = null;
+  const DURATION = 3000; // ms per slide
+
+  function goTo(n) {
+    document.getElementById('slide-' + current).classList.remove('visible');
+    current = ((n % total) + total) % total;
+    const el = document.getElementById('slide-' + current);
+    el.classList.add('visible');
+
+    // Restart slide animations by cloning
+    const clone = el.cloneNode(true);
+    clone.classList.add('visible');
+    el.parentNode.replaceChild(clone, el);
+
+    document.getElementById('slideCount').textContent = (current + 1) + ' / ' + total;
+    updateProgress();
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  function updateProgress() {
+    const fill = document.getElementById('progFill');
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+    if (playing) {
+      setTimeout(() => {
+        fill.style.transition = 'width ' + DURATION + 'ms linear';
+        fill.style.width = '100%';
+      }, 30);
+    }
+  }
+
+  function togglePlay() {
+    playing = !playing;
+    const btn = document.getElementById('playBtn');
+    if (playing) {
+      btn.textContent = '⏸ Pause';
+      updateProgress();
+      timer = setInterval(next, DURATION);
+    } else {
+      btn.textContent = '▶ Auto-play';
+      clearInterval(timer);
+      document.getElementById('progFill').style.transition = 'none';
+      document.getElementById('progFill').style.width = '0%';
+    }
+  }
+</script>
+</body>
+</html>

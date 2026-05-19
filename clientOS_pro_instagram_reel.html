@@ -1,0 +1,372 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: transparent; }
+
+  .reel-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 2rem 0;
+    font-family: var(--font-sans);
+  }
+
+  .reel-label {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.5px;
+  }
+
+  .phone-frame {
+    width: 320px;
+    height: 568px;
+    background: #0a0a0a;
+    border-radius: 36px;
+    border: 6px solid #1a1a1a;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px #333;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 28px 22px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Slide 1 - Hero */
+  .slide-1 { background: linear-gradient(145deg, #0f0c29, #302b63, #24243e); }
+  .slide-1 .tag {
+    font-size: 10px; letter-spacing: 2px; color: #a78bfa;
+    text-transform: uppercase; margin-bottom: 16px; font-weight: 500;
+  }
+  .slide-1 .big-title {
+    font-size: 28px; font-weight: 700; color: #fff;
+    text-align: center; line-height: 1.2; margin-bottom: 10px;
+  }
+  .slide-1 .big-title span { color: #a78bfa; }
+  .slide-1 .sub {
+    font-size: 12px; color: rgba(255,255,255,0.55);
+    text-align: center; margin-bottom: 28px; line-height: 1.6;
+  }
+  .slide-1 .badge {
+    background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.4);
+    color: #a78bfa; font-size: 11px; border-radius: 20px;
+    padding: 6px 16px; font-weight: 500;
+  }
+  .mockup-pill {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    width: 100%;
+  }
+  .mockup-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 4px 0; border-bottom: 0.5px solid rgba(255,255,255,0.06);
+  }
+  .mockup-row:last-child { border-bottom: none; }
+  .mockup-label { font-size: 10px; color: rgba(255,255,255,0.4); }
+  .mockup-val { font-size: 11px; color: #fff; font-weight: 500; }
+  .mockup-val.green { color: #4ade80; }
+  .mockup-val.amber { color: #fbbf24; }
+  .mockup-val.red { color: #f87171; }
+
+  /* Slide 2 - Dashboard */
+  .slide-2 { background: #0d0d1a; padding: 20px 16px; }
+  .slide-2 .s-header {
+    font-size: 10px; letter-spacing: 2px; color: #7c3aed;
+    text-transform: uppercase; margin-bottom: 14px; font-weight: 600;
+  }
+  .metric-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;
+  }
+  .metric-card {
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid rgba(255,255,255,0.08);
+    border-radius: 10px; padding: 10px 12px;
+  }
+  .metric-card .m-label { font-size: 9px; color: rgba(255,255,255,0.4); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .metric-card .m-val { font-size: 18px; font-weight: 700; color: #fff; }
+  .metric-card .m-val.blue { color: #60a5fa; }
+  .metric-card .m-val.green { color: #4ade80; }
+  .metric-card .m-val.amber { color: #fbbf24; }
+  .metric-card .m-val.red { color: #f87171; }
+  .metric-card .m-sub { font-size: 9px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+
+  .mini-bar-section { margin-top: 8px; }
+  .mini-bar-label { font-size: 9px; color: rgba(255,255,255,0.3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .mini-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .mini-bar-name { font-size: 9px; color: rgba(255,255,255,0.5); width: 54px; flex-shrink: 0; }
+  .mini-bar-track { flex: 1; height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .mini-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+  .mini-bar-amt { font-size: 9px; color: rgba(255,255,255,0.5); width: 36px; text-align: right; }
+
+  /* Slide 3 - Action Center */
+  .slide-3 { background: #0d0d1a; padding: 20px 16px; justify-content: flex-start; padding-top: 24px; }
+  .alert-header {
+    background: rgba(239,68,68,0.12); border: 0.5px solid rgba(239,68,68,0.3);
+    border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+  }
+  .alert-dot { width: 7px; height: 7px; background: #ef4444; border-radius: 50%; flex-shrink: 0; animation: blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .alert-text { font-size: 11px; color: #fca5a5; font-weight: 500; }
+  .action-item {
+    background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.08);
+    border-radius: 8px; padding: 9px 11px; margin-bottom: 7px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .action-left .a-name { font-size: 11px; color: #e2e8f0; font-weight: 500; }
+  .action-left .a-desc { font-size: 9px; color: rgba(255,255,255,0.35); margin-top: 2px; }
+  .action-badge {
+    font-size: 9px; border-radius: 6px; padding: 3px 8px; font-weight: 600;
+  }
+  .action-badge.red { background: rgba(239,68,68,0.15); color: #f87171; }
+  .action-badge.amber { background: rgba(251,191,36,0.15); color: #fbbf24; }
+  .action-badge.blue { background: rgba(96,165,250,0.15); color: #60a5fa; }
+
+  .s3-footer { margin-top: 10px; font-size: 9px; color: rgba(255,255,255,0.25); text-align: center; }
+
+  /* Slide 4 - CTA */
+  .slide-4 { background: linear-gradient(145deg, #1a0533, #0f0c29); text-align: center; }
+  .slide-4 .cta-emoji { font-size: 32px; margin-bottom: 14px; }
+  .slide-4 .cta-title { font-size: 22px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 8px; }
+  .slide-4 .cta-title span { color: #a78bfa; }
+  .slide-4 .cta-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 22px; line-height: 1.6; }
+  .cta-btn {
+    background: #7c3aed; color: #fff; font-size: 12px; font-weight: 600;
+    border-radius: 22px; padding: 10px 24px; border: none; cursor: pointer;
+    letter-spacing: 0.3px; display: inline-block; margin-bottom: 10px;
+  }
+  .slide-4 .store-link { font-size: 10px; color: rgba(255,255,255,0.3); }
+  .slide-4 .store-link span { color: #a78bfa; }
+
+  /* Progress dots */
+  .progress-dots {
+    display: flex; gap: 6px; margin-top: 12px;
+  }
+  .dot {
+    width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2);
+    transition: width 0.3s ease, background 0.3s ease;
+  }
+  .dot.active { width: 20px; background: #a78bfa; }
+
+  /* Controls */
+  .controls {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .ctrl-btn {
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 8px; padding: 8px 18px; font-size: 13px;
+    color: var(--color-text-primary); cursor: pointer;
+    font-family: var(--font-sans);
+  }
+  .ctrl-btn:hover { background: var(--color-background-tertiary); }
+  .play-btn {
+    background: #7c3aed; color: #fff; border: none;
+    border-radius: 8px; padding: 8px 20px; font-size: 13px;
+    cursor: pointer; font-family: var(--font-sans); font-weight: 500;
+  }
+
+  .tip-box {
+    max-width: 320px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    text-align: center;
+  }
+  .tip-box strong { color: var(--color-text-primary); font-weight: 500; }
+</style>
+
+<div class="reel-wrapper">
+  <span class="reel-label">Instagram Reel Preview · 9:16 format</span>
+
+  <div class="phone-frame" id="phone">
+    <!-- Slide 1: Hero -->
+    <div class="slide slide-1 active" id="slide-0">
+      <div class="tag">Freelancers & Agencies</div>
+      <div class="big-title">Run your<br>clients like a<br><span>pro</span></div>
+      <div class="sub">One Google Sheet.<br>Every client, project & payment — tracked.</div>
+      <div class="badge">✦ Client OS Pro</div>
+      <div class="mockup-pill">
+        <div class="mockup-row">
+          <span class="mockup-label">Pipeline Value</span>
+          <span class="mockup-val green">$83,000</span>
+        </div>
+        <div class="mockup-row">
+          <span class="mockup-label">Overdue Invoices</span>
+          <span class="mockup-val red">$15,000</span>
+        </div>
+        <div class="mockup-row">
+          <span class="mockup-label">Active Clients</span>
+          <span class="mockup-val">4 clients</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Dashboard -->
+    <div class="slide slide-2" id="slide-1">
+      <div class="s-header">Business Command Center</div>
+      <div class="metric-grid">
+        <div class="metric-card">
+          <div class="m-label">Pipeline</div>
+          <div class="m-val blue">$83k</div>
+          <div class="m-sub">open deals</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Revenue MTD</div>
+          <div class="m-val green">$19.2k</div>
+          <div class="m-sub">total paid</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Outstanding</div>
+          <div class="m-val amber">$32.7k</div>
+          <div class="m-sub">to collect</div>
+        </div>
+        <div class="metric-card">
+          <div class="m-label">Tasks Overdue</div>
+          <div class="m-val red">1</div>
+          <div class="m-sub">blocked</div>
+        </div>
+      </div>
+      <div class="mini-bar-section">
+        <div class="mini-bar-label">Revenue by client</div>
+        <div class="mini-bar-row">
+          <span class="mini-bar-name">Stellar Media</span>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#7c3aed;"></div></div>
+          <span class="mini-bar-amt">$8,000</span>
+        </div>
+        <div class="mini-bar-row">
+          <span class="mini-bar-name">Pixel & Co</span>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:56%;background:#4f46e5;"></div></div>
+          <span class="mini-bar-amt">$4,500</span>
+        </div>
+        <div class="mini-bar-row">
+          <span class="mini-bar-name">Bloom Agency</span>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:44%;background:#2563eb;"></div></div>
+          <span class="mini-bar-amt">$3,500</span>
+        </div>
+        <div class="mini-bar-row">
+          <span class="mini-bar-name">Crest & Co</span>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:40%;background:#0891b2;"></div></div>
+          <span class="mini-bar-amt">$3,200</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Action Center -->
+    <div class="slide slide-3" id="slide-2">
+      <div class="s-header" style="font-size:9px;letter-spacing:2px;color:#7c3aed;text-transform:uppercase;margin-bottom:12px;font-weight:600;">Action Center · Everything needs attention</div>
+      <div class="alert-header">
+        <div class="alert-dot"></div>
+        <div class="alert-text">1 overdue · 1 blocked · 5 need check-in</div>
+      </div>
+      <div class="action-item">
+        <div class="action-left">
+          <div class="a-name">NovaTech Inc</div>
+          <div class="a-desc">INV-003 · $15,000 · 19 days late</div>
+        </div>
+        <span class="action-badge red">Chase now</span>
+      </div>
+      <div class="action-item">
+        <div class="action-left">
+          <div class="a-name">Stellar Media</div>
+          <div class="a-desc">18 days silent · Health: 85</div>
+        </div>
+        <span class="action-badge amber">Check in</span>
+      </div>
+      <div class="action-item">
+        <div class="action-left">
+          <div class="a-name">Dune Digital</div>
+          <div class="a-desc">Prospect · 15 days · Score: 0</div>
+        </div>
+        <span class="action-badge blue">Follow up</span>
+      </div>
+      <div class="action-item">
+        <div class="action-left">
+          <div class="a-name">Vertix Labs</div>
+          <div class="a-desc">On Hold · Waiting on client</div>
+        </div>
+        <span class="action-badge amber">Waiting</span>
+      </div>
+      <div class="s3-footer">All data auto-updates · No manual input needed</div>
+    </div>
+
+    <!-- Slide 4: CTA -->
+    <div class="slide slide-4" id="slide-3">
+      <div class="cta-emoji">⚡</div>
+      <div class="cta-title">Stop losing<br>clients &amp; <span>money</span><br>to chaos</div>
+      <div class="cta-sub">Client OS Pro gives freelancers<br>a real command center.<br>Just Google Sheets. No subscriptions.</div>
+      <div class="cta-btn">Get Client OS Pro →</div>
+      <div class="store-link">payhip.com/<span>SheetsByPrabh</span></div>
+    </div>
+
+    <!-- Progress dots inside phone -->
+    <div style="position:absolute;bottom:16px;left:0;right:0;display:flex;justify-content:center;">
+      <div class="progress-dots" id="dots">
+        <div class="dot active" id="d0"></div>
+        <div class="dot" id="d1"></div>
+        <div class="dot" id="d2"></div>
+        <div class="dot" id="d3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" onclick="prevSlide()">← Prev</button>
+    <button class="play-btn" id="playBtn" onclick="togglePlay()">▶ Auto-play</button>
+    <button class="ctrl-btn" onclick="nextSlide()">Next →</button>
+  </div>
+
+  <div class="tip-box">
+    <strong>How to turn this into a real Reel:</strong><br>
+    Record your screen scrolling through Client OS Pro → import to CapCut (free) → add this text overlay sequence → export 9:16 → post as Reel. Hook = first 2 seconds.
+  </div>
+</div>
+
+<script>
+  let current = 0;
+  let playing = false;
+  let timer = null;
+
+  function goTo(n) {
+    document.getElementById('slide-' + current).classList.remove('active');
+    document.getElementById('d' + current).classList.remove('active');
+    current = (n + 4) % 4;
+    document.getElementById('slide-' + current).classList.add('active');
+    document.getElementById('d' + current).classList.add('active');
+  }
+
+  function nextSlide() { goTo(current + 1); }
+  function prevSlide() { goTo(current - 1); }
+
+  function togglePlay() {
+    playing = !playing;
+    const btn = document.getElementById('playBtn');
+    if (playing) {
+      btn.textContent = '⏸ Pause';
+      timer = setInterval(nextSlide, 2200);
+    } else {
+      btn.textContent = '▶ Auto-play';
+      clearInterval(timer);
+    }
+  }
+</script>
